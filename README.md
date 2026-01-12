@@ -26,8 +26,8 @@ A beautiful, private space to track your relationship journey, count the days yo
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/beenlove-memory.git
-cd beenlove-memory
+git clone https://github.com/mrlaw74/BeenLove-Memory.git
+cd BeenLove-Memory
 ```
 
 ### 2. Install dependencies

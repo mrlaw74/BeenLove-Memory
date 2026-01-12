@@ -5,10 +5,16 @@ dotenv.config({
     path: ".env.local",
 });
 
+// Use DATABASE_URL if provided (preferred for Supabase), otherwise fallback to POSTGRES_URL
+const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
 export default defineConfig({
     schema: "./src/db/schema.ts",
     dialect: "postgresql",
     dbCredentials: {
-        url: process.env.POSTGRES_URL!,
+        url: connectionString!,
+        ssl: {
+            rejectUnauthorized: false,
+        },
     },
 });
