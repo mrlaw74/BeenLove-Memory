@@ -2,10 +2,12 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
-const isLocal = process.env.POSTGRES_URL?.includes("localhost");
+// Priority: DATABASE_URL (Supabase) > POSTGRES_URL (Vercel Postgres)
+const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+const isLocal = connectionString?.includes("localhost");
 
 const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
+    connectionString,
     ssl: isLocal ? false : { rejectUnauthorized: false },
 });
 
