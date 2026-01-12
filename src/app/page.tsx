@@ -11,8 +11,27 @@ import { Settings, Heart } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const result = await db.select().from(partnerships).limit(1);
-  const partnership = result[0];
+  let partnership;
+
+  try {
+    const result = await db.select().from(partnerships).limit(1);
+    partnership = result[0];
+  } catch (error) {
+    console.error("Database connection error:", error);
+    // If DB fails, we still want to show something or redirect to setup
+    // But usually, a DB failure should be handled gracefully
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Database Connection Error</h1>
+        <p className="text-muted-foreground mb-8">
+          We couldn't connect to the database. Please check your DATABASE_URL in Vercel.
+        </p>
+        <Button asChild>
+          <Link href="/setup">Try Setup Page</Link>
+        </Button>
+      </div>
+    );
+  }
 
   if (!partnership) {
     redirect("/setup");
