@@ -5,22 +5,22 @@ import * as schema from "./schema";
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 if (!connectionString) {
-    console.error("❌ DATABASE_URL or POSTGRES_URL is missing! Please check Vercel Environment Variables.");
+    console.error("❌ DATABASE_URL or POSTGRES_URL is missing!");
 }
 
 const isLocal = connectionString?.includes("localhost") || connectionString?.includes("127.0.0.1");
 
+// Cấu hình SSL cực kỳ quan trọng cho Supabase/Vercel
 const pool = new Pool({
     connectionString,
-    // Supabase/Vercel require SSL in production. rejectUnauthorized: false is often needed for self-signed certs.
     ssl: isLocal ? false : { rejectUnauthorized: false },
-    max: 10,        // Limit pooling for serverless
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    max: 10,
+    connectionTimeoutMillis: 5000, // Tăng thêm thời gian chờ
 });
 
+// Lắng nghe lỗi kết nối để log ra server
 pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
+    console.error('CRITICAL: Unexpected error on idle client', err);
 });
 
 export const db = drizzle(pool, { schema });

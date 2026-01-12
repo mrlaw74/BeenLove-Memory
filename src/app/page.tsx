@@ -26,8 +26,13 @@ export default async function HomePage() {
         <p className="text-muted-foreground mb-4">
           We couldn't connect to the database. Detailed error:
         </p>
-        <div className="bg-red-50 p-4 rounded-xl mb-8 font-mono text-sm inline-block text-red-700 max-w-2xl overflow-auto border border-red-100">
-          {(error as Error).message || "Unknown error"}
+        <div className="bg-red-50 p-4 rounded-xl mb-8 font-mono text-sm inline-block text-red-700 max-w-2xl overflow-auto border border-red-100 text-left">
+          <p><strong>Message:</strong> {(error as any).message}</p>
+          {(error as any).cause && (
+            <p className="mt-2 text-xs opacity-80">
+              <strong>Cause:</strong> {JSON.stringify((error as any).cause)}
+            </p>
+          )}
         </div>
         <p className="text-sm text-muted-foreground mb-8">
           Check your <strong>DATABASE_URL</strong> in Vercel Settings.
