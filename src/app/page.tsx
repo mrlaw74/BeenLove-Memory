@@ -23,8 +23,14 @@ export default async function HomePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-2xl font-bold text-red-500 mb-4">Database Connection Error</h1>
-        <p className="text-muted-foreground mb-8">
-          We couldn't connect to the database. Please check your DATABASE_URL in Vercel.
+        <p className="text-muted-foreground mb-4">
+          We couldn't connect to the database. Detailed error:
+        </p>
+        <div className="bg-red-50 p-4 rounded-xl mb-8 font-mono text-sm inline-block text-red-700 max-w-2xl overflow-auto border border-red-100">
+          {(error as Error).message || "Unknown error"}
+        </div>
+        <p className="text-sm text-muted-foreground mb-8">
+          Check your <strong>DATABASE_URL</strong> in Vercel Settings.
         </p>
         <Button asChild>
           <Link href="/setup">Try Setup Page</Link>
