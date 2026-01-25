@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
+// Ưu tiên DATABASE_URL (nên đặt tên này trên Vercel để tránh trùng lặp)
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
 
 if (!connectionString) {
@@ -10,18 +11,21 @@ if (!connectionString) {
 
 const isLocal = connectionString?.includes("localhost") || connectionString?.includes("127.0.0.1");
 
-// Cấu hình SSL cực kỳ quan trọng cho Supabase/Vercel
 const pool = new Pool({
     connectionString,
-    ssl: isLocal ? false : { rejectUnauthorized: false },
+    // Supabase cần SSL ở môi trường production
+    ssl: isLocal ? false : {
+        rejectUnauthorized: false
+    },
     max: 10,
-    connectionTimeoutMillis: 5000, // Tăng thêm thời gian chờ
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
 });
 
-// Lắng nghe lỗi kết nối để log ra server
 pool.on('error', (err) => {
     console.error('CRITICAL: Unexpected error on idle client', err);
 });
 
 export const db = drizzle(pool, { schema });
 export { schema };
+
